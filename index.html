@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philly Willy — Ventas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --yellow: #FFD600;
+  --yellow-dark: #C8A800;
+  --black: #111111;
+  --dark: #1a1a1a;
+  --card: #242424;
+  --card2: #2e2e2e;
+  --border: rgba(255,255,255,0.08);
+  --text: #f0f0f0;
+  --muted: #888;
+  --green: #4ade80;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --purple: #c084fc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo {
+  width: 34px;
+  height: 34px;
+  background: var(--yellow);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-logo span {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--black);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+.nav-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+}
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+}
+.tab-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  background: var(--yellow);
+  color: var(--black);
+}
+.tab-btn:hover:not(.active) {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+
+/* PAGES */
+.page { display: none; padding: 1.5rem; max-width: 780px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* SECTION LABELS */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  margin-top: 1.5rem;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* DATE BAR */
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+.date-row label { font-size: 13px; color: var(--muted); }
+.date-row input[type=date] {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+.date-row input[type=date]::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+}
+
+/* PRODUCTS GRID */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.prod-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  transition: border-color 0.15s;
+}
+.prod-card.has-qty {
+  border-color: var(--yellow-dark);
+}
+.prod-emoji { font-size: 24px; margin-bottom: 8px; }
+.prod-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.prod-info { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.prod-info span { color: var(--yellow); }
+.qty-row { display: flex; align-items: center; gap: 10px; }
+.qty-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
+  font-family: 'DM Sans', sans-serif;
+}
+.qty-btn:hover { background: rgba(255,214,0,0.15); border-color: var(--yellow-dark); }
+.qty-num {
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 22px;
+  text-align: center;
+  color: var(--yellow);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+}
+.prod-sub { font-size: 11px; color: var(--green); margin-top: 6px; height: 14px; }
+
+/* PAYMENT METHOD */
+.pay-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.pay-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pay-btn.selected.cash {
+  background: rgba(74,222,128,0.12);
+  border-color: var(--green);
+  color: var(--green);
+}
+.pay-btn.selected.card {
+  background: rgba(96,165,250,0.12);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.pay-btn:hover:not(.selected) {
+  background: var(--card2);
+  color: var(--text);
+}
+.pay-icon { font-size: 16px; }
+
+/* REGISTER BTN */
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--yellow);
+  color: var(--black);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-bottom: 1.5rem;
+}
+.register-btn:hover:not(:disabled) { opacity: 0.88; }
+.register-btn:active:not(:disabled) { transform: scale(0.99); }
+.register-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--green);
+  color: #052e0e;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* METRICS */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.metric {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+.metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.metric-value { font-size: 18px; font-weight: 600; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.5px; }
+.metric-value.green { color: var(--green); }
+.metric-value.red { color: var(--red); }
+.metric-value.yellow { color: var(--yellow); }
+.metric-value.blue { color: var(--blue); }
+
+/* SALES TABLE */
+.sales-wrap { overflow-x: auto; margin-bottom: 1.25rem; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* TAGS */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin: 1px;
+  letter-spacing: 0.02em;
+}
+.t-combo { background: rgba(255,214,0,0.15); color: #FFD600; }
+.t-sencillo { background: rgba(251,146,60,0.15); color: #fb923c; }
+.t-papas { background: rgba(74,222,128,0.15); color: #4ade80; }
+.t-bebida { background: rgba(192,132,252,0.15); color: #c084fc; }
+.t-cash { background: rgba(74,222,128,0.12); color: var(--green); }
+.t-card { background: rgba(96,165,250,0.12); color: var(--blue); }
+
+/* DEL BTN */
+.del-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.1s;
+}
+.del-btn:hover { background: rgba(248,113,113,0.15); color: var(--red); }
+
+/* BREAKDOWN LIST */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.bkd-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bkd-left { display: flex; align-items: center; gap: 8px; }
+.bkd-name { font-size: 13px; font-weight: 500; }
+.bkd-qty { font-size: 11px; color: var(--muted); }
+.bkd-right { text-align: right; }
+.bkd-ingreso { font-size: 13px; font-weight: 600; color: var(--yellow); }
+.bkd-ganancia { font-size: 11px; color: var(--green); }
+
+/* PAY BREAKDOWN */
+.pay-split {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.pay-split-card {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+.pay-split-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.pay-split-val { font-size: 18px; font-weight: 600; font-family: 'Bebas Neue', sans-serif; }
+.pay-split-val.cash { color: var(--green); }
+.pay-split-val.card { color: var(--blue); }
+
+/* CHART */
+.chart-wrap { position: relative; width: 100%; height: 200px; margin-bottom: 1.5rem; }
+
+/* EXPORT BTN */
+.export-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(74,222,128,0.3);
+  background: rgba(74,222,128,0.08);
+  color: var(--green);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.export-btn:hover { background: rgba(74,222,128,0.15); border-color: var(--green); }
+.export-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--muted);
+  font-size: 14px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+}
+
+/* HISTORIAL */
+.hist-date-group { margin-bottom: 1.5rem; }
+.hist-date-header {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.hist-date-header span { color: var(--yellow); }
+
+/* STATUS BAR */
+.status-bar {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 1rem;
+}
+.status-bar.syncing { background: rgba(255,214,0,0.1); color: var(--yellow); }
+.status-bar.error   { background: rgba(248,113,113,0.1); color: var(--red); }
+
+@media (max-width: 500px) {
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .pay-split { flex-direction: column; }
+  nav { padding: 0 1rem; }
+  .nav-title { font-size: 18px; }
+  .tab-btn { padding: 6px 10px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo"><span>PW</span></div>
+    <div class="nav-title">Philly Willy</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('registrar')">Registrar</button>
+    <button class="tab-btn" onclick="showTab('resumen')">Resumen</button>
+    <button class="tab-btn" onclick="showTab('historial')">Historial</button>
+  </div>
+</nav>
+
+<div id="toast" class="toast">¡Venta registrada!</div>
+
+<div id="statusBar" class="status-bar" style="display:none"></div>
+
+<!-- =================== REGISTRAR =================== -->
+<div id="page-registrar" class="page active">
+  <div class="date-row">
+    <label>Fecha</label>
+    <input type="date" id="fechaReg">
+  </div>
+
+  <div class="section-label">Productos</div>
+  <div class="products-grid" id="productsGrid"></div>
+
+  <div class="section-label">Método de pago</div>
+  <div class="pay-row">
+    <button class="pay-btn cash" id="payCash" onclick="selectPay('cash')">
+      <span class="pay-icon">💵</span> Efectivo
+    </button>
+    <button class="pay-btn card" id="payCard" onclick="selectPay('card')">
+      <span class="pay-icon">💳</span> Tarjeta
+    </button>
+  </div>
+
+  <button class="register-btn" id="registerBtn" onclick="registrarVenta()" disabled>
+    Registrar venta
+  </button>
+</div>
+
+<!-- =================== RESUMEN =================== -->
+<div id="page-resumen" class="page">
+  <div class="date-row">
+    <label>Fecha</label>
+    <input type="date" id="fechaRes">
+  </div>
+
+  <div class="section-label">Métricas del día</div>
+  <div class="metrics-row">
+    <div class="metric">
+      <div class="metric-label">Ingresos</div>
+      <div class="metric-value yellow" id="mIngreso">$0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Costos</div>
+      <div class="metric-value red" id="mCosto">$0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Ganancia</div>
+      <div class="metric-value green" id="mGanancia">$0</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Margen</div>
+      <div class="metric-value green" id="mMargen">0%</div>
+    </div>
+  </div>
+
+  <div class="section-label">Efectivo vs Tarjeta</div>
+  <div class="pay-split">
+    <div class="pay-split-card">
+      <div class="pay-split-label">💵 Efectivo</div>
+      <div class="pay-split-val cash" id="pEfectivo">$0</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px" id="pEfectivoN">0 ventas</div>
+    </div>
+    <div class="pay-split-card">
+      <div class="pay-split-label">💳 Tarjeta</div>
+      <div class="pay-split-val card" id="pTarjeta">$0</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px" id="pTarjetaN">0 ventas</div>
+    </div>
+  </div>
+
+  <div class="section-label">Desglose por producto</div>
+  <div class="breakdown-grid" id="breakdownGrid"></div>
+
+  <div class="section-label">Ventas por hora</div>
+  <div class="chart-wrap"><canvas id="salesChart" role="img" aria-label="Ventas por hora del día">Gráfica de ventas por hora.</canvas></div>
+
+  <div class="section-label">Ventas del día</div>
+  <div id="salesList"></div>
+
+  <button class="export-btn" id="exportBtn" onclick="exportarExcel()">
+    <span style="font-size:16px">📊</span> Exportar Excel del día
+  </button>
+</div>
+
+<!-- =================== HISTORIAL =================== -->
+<div id="page-historial" class="page">
+  <div class="section-label" style="margin-top:0">Historial de ventas</div>
+  <div id="historialContent"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbyEtFp7vVoCYDUv9pyAlXdD0zImC3fvIBStyqRAfNq1TsLmVvNJ0S3A2tUGvK9AU20z/exec';
+
+const PRODUCTS = [
+  { id:'sencillo', name:'Cheesesteak', emoji:'🥖', price:90,  cost:44.09, tag:'t-sencillo', label:'Sencillo' },
+  { id:'combo',    name:'Combo',       emoji:'🍟', price:150, cost:59.23, tag:'t-combo',    label:'Combo'    },
+  { id:'papas',    name:'Papas fritas',emoji:'🍟', price:60,  cost:13.18, tag:'t-papas',    label:'Papas'    },
+  { id:'bebida',   name:'Jamaica',     emoji:'🌺', price:35,  cost:1.96,  tag:'t-bebida',   label:'Jamaica'  }
+];
+
+const TAG_MAP = { Sencillo:'t-sencillo', Combo:'t-combo', 'Papas fritas':'t-papas', Jamaica:'t-bebida' };
+
+let qty = {sencillo:0,combo:0,papas:0,bebida:0};
+let payMethod = 'cash';
+let sales = [];
+let chart = null;
+let syncInterval = null;
+
+const today = () => new Date().toISOString().slice(0,10);
+document.getElementById('fechaReg').value = today();
+document.getElementById('fechaRes').value = today();
+document.getElementById('payCash').classList.add('selected');
+
+/* ---- API ---- */
+async function apiGet() {
+  const res = await fetch(API);
+  const raw = await res.json();
+  return raw.map(s => ({
+    ...s,
+    total: parseFloat(s.total) || 0,
+    costoTotal: parseFloat(s.costoTotal) || 0,
+    items: (s.items || []).map(i => ({
+      ...i,
+      tag: TAG_MAP[i.label] || 't-sencillo',
+      qty: parseInt(i.qty) || 1,
+      subtotal: (parseInt(i.qty)||1) * (PRODUCTS.find(p=>p.label===i.label)?.price||0),
+      costoTotal: (parseInt(i.qty)||1) * (PRODUCTS.find(p=>p.label===i.label)?.cost||0),
+    }))
+  }));
+}
+
+async function apiPost(data) {
+  await fetch(API, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'text/plain' }
+  });
+}
+
+/* ---- STATUS BAR ---- */
+function setStatus(msg, type='') {
+  const bar = document.getElementById('statusBar');
+  bar.textContent = msg;
+  bar.className = 'status-bar ' + type;
+  bar.style.display = msg ? 'block' : 'none';
+}
+
+/* ---- SYNC ---- */
+async function syncSales(silent=false) {
+  if (!silent) setStatus('Sincronizando...', 'syncing');
+  try {
+    sales = await apiGet();
+    if (!silent) setStatus('', '');
+    return true;
+  } catch(e) {
+    setStatus('Sin conexión — mostrando datos en caché', 'error');
+    return false;
+  }
+}
+
+/* ---- AUTO REFRESH cada 30s ---- */
+function startAutoSync() {
+  if (syncInterval) clearInterval(syncInterval);
+  syncInterval = setInterval(async () => {
+    const activeTab = document.querySelector('.page.active')?.id;
+    await syncSales(true);
+    if (activeTab === 'page-resumen') renderResumen();
+    if (activeTab === 'page-historial') renderHistorial();
+  }, 30000);
+}
+
+/* ---- TABS ---- */
+async function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  event.target.classList.add('active');
+  await syncSales();
+  if (name === 'resumen') renderResumen();
+  if (name === 'historial') renderHistorial();
+}
+
+/* ---- PRODUCT CARDS ---- */
+function buildProducts() {
+  const g = document.getElementById('productsGrid');
+  g.innerHTML = '';
+  PRODUCTS.forEach(p => {
+    const q = qty[p.id];
+    g.innerHTML += `<div class="prod-card ${q>0?'has-qty':''}" id="card_${p.id}">
+      <div class="prod-emoji">${p.emoji}</div>
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-info">$${p.price} &nbsp;·&nbsp; costo <span>$${p.cost.toFixed(2)}</span></div>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="chQty('${p.id}',-1)">−</button>
+        <span class="qty-num" id="qn_${p.id}">${q}</span>
+        <button class="qty-btn" onclick="chQty('${p.id}',1)">+</button>
+      </div>
+      <div class="prod-sub" id="ps_${p.id}">${q>0?'$'+(q*p.price).toFixed(2)+' subtotal':''}</div>
+    </div>`;
+  });
+}
+
+function chQty(id, d) {
+  qty[id] = Math.max(0, qty[id] + d);
+  document.getElementById('qn_'+id).textContent = qty[id];
+  const p = PRODUCTS.find(x=>x.id===id);
+  document.getElementById('ps_'+id).textContent = qty[id]>0 ? '$'+(qty[id]*p.price).toFixed(2)+' subtotal' : '';
+  document.getElementById('card_'+id).className = 'prod-card '+(qty[id]>0?'has-qty':'');
+  const total = PRODUCTS.reduce((s,p)=>s+qty[p.id]*p.price,0);
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = total===0;
+  btn.textContent = total>0 ? `Registrar — $${total.toFixed(2)}` : 'Registrar venta';
+}
+
+/* ---- PAYMENT ---- */
+function selectPay(method) {
+  payMethod = method;
+  document.getElementById('payCash').classList.toggle('selected', method==='cash');
+  document.getElementById('payCard').classList.toggle('selected', method==='card');
+}
+
+/* ---- REGISTER ---- */
+async function registrarVenta() {
+  const total = PRODUCTS.reduce((s,p)=>s+qty[p.id]*p.price,0);
+  if (!total) return;
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  setStatus('Guardando venta...', 'syncing');
+
+  const fecha = document.getElementById('fechaReg').value;
+  const hora = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const items = PRODUCTS.filter(p=>qty[p.id]>0).map(p=>({
+    id:p.id, label:p.label, tag:p.tag,
+    qty:qty[p.id], price:p.price, cost:p.cost,
+    subtotal:qty[p.id]*p.price, costoTotal:qty[p.id]*p.cost
+  }));
+  const sale = {
+    id: Date.now(), fecha, hora,
+    items, total,
+    costoTotal: items.reduce((s,i)=>s+i.costoTotal,0),
+    pago: payMethod
+  };
+
+  try {
+    await apiPost({ action: 'addSale', sale });
+    sales.push(sale);
+    setStatus('', '');
+    showToast('¡Venta de $'+total.toFixed(2)+' registrada!');
+  } catch(e) {
+    setStatus('Error al guardar — revisa tu conexión', 'error');
+    showToast('Error al guardar :(');
+  }
+
+  qty={sencillo:0,combo:0,papas:0,bebida:0};
+  buildProducts();
+  btn.disabled = true;
+  btn.textContent = 'Registrar venta';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+async function eliminarVenta(id) {
+  if (!confirm('¿Eliminar esta venta?')) return;
+  setStatus('Eliminando...', 'syncing');
+  try {
+    await apiPost({ action: 'deleteSale', id });
+    sales = sales.filter(s=>String(s.id)!==String(id));
+    setStatus('', '');
+  } catch(e) {
+    setStatus('Error al eliminar', 'error');
+  }
+  renderResumen();
+}
+
+/* ---- RESUMEN ---- */
+document.getElementById('fechaRes').addEventListener('change', async () => {
+  await syncSales();
+  renderResumen();
+});
+
+function renderResumen() {
+  const fecha = document.getElementById('fechaRes').value;
+  const ds = sales.filter(s=>s.fecha===fecha);
+
+  const ingreso = ds.reduce((s,v)=>s+v.total,0);
+  const costo = ds.reduce((s,v)=>s+v.costoTotal,0);
+  const ganancia = ingreso-costo;
+  const margen = ingreso>0?(ganancia/ingreso*100):0;
+
+  document.getElementById('mIngreso').textContent = '$'+ingreso.toFixed(2);
+  document.getElementById('mCosto').textContent = '$'+costo.toFixed(2);
+  document.getElementById('mGanancia').textContent = '$'+ganancia.toFixed(2);
+  document.getElementById('mGanancia').className = 'metric-value '+(ganancia>=0?'green':'red');
+  document.getElementById('mMargen').textContent = margen.toFixed(1)+'%';
+  document.getElementById('mMargen').className = 'metric-value '+(margen>=0?'green':'red');
+
+  const cashSales = ds.filter(s=>s.pago==='cash');
+  const cardSales = ds.filter(s=>s.pago==='card');
+  document.getElementById('pEfectivo').textContent = '$'+cashSales.reduce((s,v)=>s+v.total,0).toFixed(2);
+  document.getElementById('pEfectivoN').textContent = cashSales.length+' venta'+(cashSales.length!==1?'s':'');
+  document.getElementById('pTarjeta').textContent = '$'+cardSales.reduce((s,v)=>s+v.total,0).toFixed(2);
+  document.getElementById('pTarjetaN').textContent = cardSales.length+' venta'+(cardSales.length!==1?'s':'');
+
+  const byP = {};
+  PRODUCTS.forEach(p=>{byP[p.id]={...p,qtyTotal:0,ingTotal:0,costTotal:0};});
+  ds.forEach(s=>s.items.forEach(i=>{
+    const pid = PRODUCTS.find(p=>p.label===i.label)?.id || i.id;
+    if(!byP[pid]) return;
+    byP[pid].qtyTotal += i.qty;
+    byP[pid].ingTotal += i.subtotal || i.qty*(PRODUCTS.find(p=>p.id===pid)?.price||0);
+    byP[pid].costTotal += i.costoTotal || i.qty*(PRODUCTS.find(p=>p.id===pid)?.cost||0);
+  }));
+  const bg = document.getElementById('breakdownGrid');
+  const active = PRODUCTS.filter(p=>byP[p.id].qtyTotal>0);
+  bg.innerHTML = active.length===0
+    ? '<div class="empty" style="grid-column:1/-1">Sin ventas para esta fecha</div>'
+    : active.map(p=>{
+        const b=byP[p.id];
+        const g=b.ingTotal-b.costTotal;
+        return `<div class="bkd-card">
+          <div class="bkd-left">
+            <span style="font-size:20px">${p.emoji}</span>
+            <div><div class="bkd-name">${p.name}</div><div class="bkd-qty">${b.qtyTotal} pza${b.qtyTotal!==1?'s':''}</div></div>
+          </div>
+          <div class="bkd-right">
+            <div class="bkd-ingreso">$${b.ingTotal.toFixed(2)}</div>
+            <div class="bkd-ganancia">+$${g.toFixed(2)}</div>
+          </div>
+        </div>`;
+      }).join('');
+
+  renderChart(ds);
+  renderSalesList(ds);
+}
+
+function renderSalesList(ds) {
+  const el = document.getElementById('salesList');
+  if (!ds.length) { el.innerHTML='<div class="empty">Sin ventas para esta fecha</div>'; return; }
+  el.innerHTML=`<div class="sales-wrap"><table>
+    <thead><tr>
+      <th>Hora</th><th>Productos</th><th>Pago</th>
+      <th>Ingreso</th><th>Costo</th><th>Ganancia</th><th></th>
+    </tr></thead>
+    <tbody>
+    ${ds.slice().reverse().map(s=>`<tr>
+      <td style="white-space:nowrap;color:var(--muted)">${s.hora}</td>
+      <td>${s.items.map(i=>`<span class="tag ${i.tag||'t-sencillo'}">${i.qty>1?i.qty+'× ':''}${i.label}</span>`).join('')}</td>
+      <td><span class="tag ${s.pago==='cash'?'t-cash':'t-card'}">${s.pago==='cash'?'💵 Efectivo':'💳 Tarjeta'}</span></td>
+      <td style="color:var(--yellow)">$${parseFloat(s.total).toFixed(2)}</td>
+      <td style="color:var(--muted)">$${parseFloat(s.costoTotal).toFixed(2)}</td>
+      <td style="color:var(--green)">$${(s.total-s.costoTotal).toFixed(2)}</td>
+      <td><button class="del-btn" onclick="eliminarVenta('${s.id}')">✕</button></td>
+    </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function renderChart(ds) {
+  const hm={};
+  for(let h=8;h<=22;h++) hm[h.toString().padStart(2,'0')+':00']=0;
+  ds.forEach(s=>{ const h=(s.hora||'08:00').slice(0,2)+':00'; hm[h]=(hm[h]||0)+s.total; });
+  if(chart){chart.destroy();chart=null;}
+  chart=new Chart(document.getElementById('salesChart'),{
+    type:'bar',
+    data:{
+      labels:Object.keys(hm),
+      datasets:[{label:'Ventas',data:Object.values(hm),backgroundColor:'rgba(255,214,0,0.7)',borderRadius:4,borderSkipped:false}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#666',font:{size:11},autoSkip:true,maxRotation:45},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#666',font:{size:11},callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+/* ---- HISTORIAL ---- */
+function renderHistorial() {
+  const el = document.getElementById('historialContent');
+  if (!sales.length) { el.innerHTML='<div class="empty">Sin ventas registradas</div>'; return; }
+  const grouped={};
+  sales.forEach(s=>{
+    if(!grouped[s.fecha]) grouped[s.fecha]=[];
+    grouped[s.fecha].push(s);
+  });
+  const sortedDates = Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+  el.innerHTML = sortedDates.map(fecha=>{
+    const ds = grouped[fecha];
+    const ing = ds.reduce((s,v)=>s+v.total,0);
+    const gan = ds.reduce((s,v)=>s+(v.total-v.costoTotal),0);
+    const label = new Date(fecha+'T12:00:00').toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+    return `<div class="hist-date-group">
+      <div class="hist-date-header">
+        <span style="color:var(--text);text-transform:capitalize">${label}</span>
+        <span>$${ing.toFixed(2)} &nbsp;·&nbsp; ganancia <span style="color:var(--green)">+$${gan.toFixed(2)}</span></span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr>
+          <th style="text-align:left;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:0 8px 6px;border-bottom:1px solid var(--border)">Hora</th>
+          <th style="text-align:left;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:0 8px 6px;border-bottom:1px solid var(--border)">Productos</th>
+          <th style="text-align:left;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:0 8px 6px;border-bottom:1px solid var(--border)">Pago</th>
+          <th style="text-align:right;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:0 8px 6px;border-bottom:1px solid var(--border)">Total</th>
+        </tr></thead>
+        <tbody>
+        ${ds.slice().reverse().map(s=>`<tr>
+          <td style="padding:8px;color:var(--muted);white-space:nowrap">${s.hora}</td>
+          <td style="padding:8px">${s.items.map(i=>`<span class="tag ${i.tag||'t-sencillo'}">${i.qty>1?i.qty+'× ':''}${i.label}</span>`).join('')}</td>
+          <td style="padding:8px"><span class="tag ${s.pago==='cash'?'t-cash':'t-card'}">${s.pago==='cash'?'💵':'💳'} ${s.pago==='cash'?'Efectivo':'Tarjeta'}</span></td>
+          <td style="padding:8px;text-align:right;color:var(--yellow);font-weight:600">$${parseFloat(s.total).toFixed(2)}</td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }).join('');
+}
+
+/* ---- EXPORTAR EXCEL ---- */
+function exportarExcel() {
+  const fecha = document.getElementById('fechaRes').value;
+  const ds = sales.filter(s => s.fecha === fecha);
+  if (!ds.length) { alert('No hay ventas para exportar en esta fecha.'); return; }
+
+  const wb = XLSX.utils.book_new();
+  const [y, m, d] = fecha.split('-');
+  const fechaLabel = `${d}/${m}/${y}`;
+
+  const ventasRows = [
+    ['Philly Willy — Ventas del día','','','','','',''],
+    ['Fecha:', fechaLabel,'','','','',''],[''],
+    ['#','Hora','Productos','Método de pago','Ingreso ($)','Costo ($)','Ganancia ($)']
+  ];
+  ds.forEach((s,i)=>{
+    const productos = s.items.map(it=>`${it.qty>1?it.qty+'x ':''}${it.label}`).join(', ');
+    ventasRows.push([i+1, s.hora, productos, s.pago==='cash'?'Efectivo':'Tarjeta',
+      +s.total.toFixed(2), +s.costoTotal.toFixed(2), +(s.total-s.costoTotal).toFixed(2)]);
+  });
+  const ingTotal=ds.reduce((s,v)=>s+v.total,0);
+  const cosTotal=ds.reduce((s,v)=>s+v.costoTotal,0);
+  ventasRows.push([''],['','','','TOTAL',+ingTotal.toFixed(2),+cosTotal.toFixed(2),+(ingTotal-cosTotal).toFixed(2)]);
+  const wsV=XLSX.utils.aoa_to_sheet(ventasRows);
+  wsV['!cols']=[{wch:4},{wch:8},{wch:36},{wch:14},{wch:12},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,wsV,'Ventas');
+
+  const byP={};
+  PRODUCTS.forEach(p=>{byP[p.id]={name:p.name,qty:0,ingreso:0,costo:0};});
+  ds.forEach(s=>s.items.forEach(i=>{
+    const pid=PRODUCTS.find(p=>p.label===i.label)?.id||i.id;
+    if(!byP[pid])return;
+    byP[pid].qty+=i.qty;
+    byP[pid].ingreso+=i.subtotal||i.qty*(PRODUCTS.find(p=>p.id===pid)?.price||0);
+    byP[pid].costo+=i.costoTotal||i.qty*(PRODUCTS.find(p=>p.id===pid)?.cost||0);
+  }));
+  const resRows=[['Philly Willy — Resumen por producto','','','',''],['Fecha:',fechaLabel,'','',''],[''],
+    ['Producto','Piezas vendidas','Ingreso ($)','Costo ($)','Ganancia ($)']];
+  PRODUCTS.forEach(p=>{const b=byP[p.id];if(b.qty>0)resRows.push([b.name,b.qty,+b.ingreso.toFixed(2),+b.costo.toFixed(2),+(b.ingreso-b.costo).toFixed(2)]);});
+  resRows.push([''],['TOTAL','',+ingTotal.toFixed(2),+cosTotal.toFixed(2),+(ingTotal-cosTotal).toFixed(2)]);
+  const wsR=XLSX.utils.aoa_to_sheet(resRows);
+  wsR['!cols']=[{wch:18},{wch:16},{wch:14},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,wsR,'Por producto');
+
+  const cashS=ds.filter(s=>s.pago==='cash'), cardS=ds.filter(s=>s.pago==='card');
+  const pagoRows=[['Philly Willy — Efectivo vs Tarjeta',''],['Fecha:',fechaLabel],[''],
+    ['Método','Ventas (#)','Total ($)'],
+    ['Efectivo',cashS.length,+cashS.reduce((s,v)=>s+v.total,0).toFixed(2)],
+    ['Tarjeta',cardS.length,+cardS.reduce((s,v)=>s+v.total,0).toFixed(2)],
+    [''],['TOTAL',ds.length,+ingTotal.toFixed(2)]];
+  const wsP=XLSX.utils.aoa_to_sheet(pagoRows);
+  wsP['!cols']=[{wch:14},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,wsP,'Pago');
+
+  XLSX.writeFile(wb,`PhillyWilly_${y}${m}${d}.xlsx`);
+  showToast('¡Excel generado!');
+}
+
+/* ---- INIT ---- */
+async function init() {
+  buildProducts();
+  setStatus('Cargando ventas...', 'syncing');
+  await syncSales();
+  setStatus('', '');
+  startAutoSync();
+}
+init();
+</script>
+</body>
+</html>
